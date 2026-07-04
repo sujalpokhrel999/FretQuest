@@ -89,7 +89,7 @@ export function usePitch(opts: UsePitchOptions = {}) {
         let sumSq = 0;
         for (let i = 0; i < b.length; i++) sumSq += b[i] * b[i];
         const rms = Math.sqrt(sumSq / b.length);
-        const [freq, clarity] = d.findPitch(b, c.sampleRate);
+        const [freq, clarity] = d.findPitch(b as unknown as Float32Array<ArrayBuffer>, c.sampleRate);
         let note: DetectedNote | null = null;
         if (clarity > minClarity && rms > minVolume && freq > 60 && freq < 1400) {
           note = frequencyToNote(freq);
