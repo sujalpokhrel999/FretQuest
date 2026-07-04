@@ -84,7 +84,7 @@ export function usePitch(opts: UsePitchOptions = {}) {
         const b = bufferRef.current;
         const c = ctxRef.current;
         if (!a || !d || !b || !c) return;
-        a.getFloatTimeDomainData(b);
+        a.getFloatTimeDomainData(b as unknown as Float32Array<ArrayBuffer>);
         // rms
         let sumSq = 0;
         for (let i = 0; i < b.length; i++) sumSq += b[i] * b[i];
