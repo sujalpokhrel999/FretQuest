@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TunerRouteImport } from './routes/tuner'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RiffsRouteImport } from './routes/riffs'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as ChordsRouteImport } from './routes/chords'
@@ -18,6 +19,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const TunerRoute = TunerRouteImport.update({
   id: '/tuner',
   path: '/tuner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RiffsRoute = RiffsRouteImport.update({
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/chords': typeof ChordsRoute
   '/notes': typeof NotesRoute
   '/riffs': typeof RiffsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tuner': typeof TunerRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/chords': typeof ChordsRoute
   '/notes': typeof NotesRoute
   '/riffs': typeof RiffsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tuner': typeof TunerRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,22 @@ export interface FileRoutesById {
   '/chords': typeof ChordsRoute
   '/notes': typeof NotesRoute
   '/riffs': typeof RiffsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tuner': typeof TunerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/chords' | '/notes' | '/riffs' | '/tuner'
+  fullPaths: '/' | '/chords' | '/notes' | '/riffs' | '/sitemap.xml' | '/tuner'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/chords' | '/notes' | '/riffs' | '/tuner'
-  id: '__root__' | '/' | '/chords' | '/notes' | '/riffs' | '/tuner'
+  to: '/' | '/chords' | '/notes' | '/riffs' | '/sitemap.xml' | '/tuner'
+  id:
+    | '__root__'
+    | '/'
+    | '/chords'
+    | '/notes'
+    | '/riffs'
+    | '/sitemap.xml'
+    | '/tuner'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +92,7 @@ export interface RootRouteChildren {
   ChordsRoute: typeof ChordsRoute
   NotesRoute: typeof NotesRoute
   RiffsRoute: typeof RiffsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TunerRoute: typeof TunerRoute
 }
 
@@ -86,6 +103,13 @@ declare module '@tanstack/react-router' {
       path: '/tuner'
       fullPath: '/tuner'
       preLoaderRoute: typeof TunerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/riffs': {
@@ -124,6 +148,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChordsRoute: ChordsRoute,
   NotesRoute: NotesRoute,
   RiffsRoute: RiffsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TunerRoute: TunerRoute,
 }
 export const routeTree = rootRouteImport
