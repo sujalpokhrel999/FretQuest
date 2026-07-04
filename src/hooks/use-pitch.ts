@@ -73,7 +73,7 @@ export function usePitch(opts: UsePitchOptions = {}) {
       analyserRef.current = analyser;
       const detector = PitchDetector.forFloat32Array(analyser.fftSize);
       detectorRef.current = detector;
-      const buffer = new Float32Array(analyser.fftSize);
+      const buffer = new Float32Array(new ArrayBuffer(analyser.fftSize * 4));
       bufferRef.current = buffer;
 
       setState((s) => ({ ...s, listening: true, error: null }));
