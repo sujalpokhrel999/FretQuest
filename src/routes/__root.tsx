@@ -76,13 +76,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Fretwave — Real-time guitar training with pitch detection" },
+      { title: "FretQuest - Interactive Guitar Tuner, Scale & Chord Trainer" },
       {
         name: "description",
         content:
           "Learn guitar with real-time microphone pitch detection. Practice notes, chords, riffs, and stay in tune with an integrated tuner and metronome.",
       },
-      { property: "og:title", content: "Fretwave — Real-time guitar training" },
+      { property: "og:title", content: "FretQuest - Interactive Guitar Tuner, Scale & Chord Trainer" },
       {
         property: "og:description",
         content:
@@ -90,6 +90,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "FretQuest - Interactive Guitar Tuner, Scale & Chord Trainer" },
+      { name: "description", content: "Master the guitar fret board with FretQuest. Features real-time pitch detection, customized scales drills, chord diagrams, and random riff challenges." },
+      { property: "og:description", content: "Master the guitar fret board with FretQuest. Features real-time pitch detection, customized scales drills, chord diagrams, and random riff challenges." },
+      { name: "twitter:description", content: "Master the guitar fret board with FretQuest. Features real-time pitch detection, customized scales drills, chord diagrams, and random riff challenges." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/tFtfCyJVhohuv8DPV6FWrVcbzV03/social-images/social-1783148847826-Gemini_Generated_Image_o3169zo3169zo316.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/tFtfCyJVhohuv8DPV6FWrVcbzV03/social-images/social-1783148847826-Gemini_Generated_Image_o3169zo3169zo316.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
