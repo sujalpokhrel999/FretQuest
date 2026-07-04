@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TunerRouteImport } from './routes/tuner'
 import { Route as NotesRouteImport } from './routes/notes'
+import { Route as ChordsRouteImport } from './routes/chords'
 import { Route as IndexRouteImport } from './routes/index'
 
 const TunerRoute = TunerRouteImport.update({
@@ -23,6 +24,11 @@ const NotesRoute = NotesRouteImport.update({
   path: '/notes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChordsRoute = ChordsRouteImport.update({
+  id: '/chords',
+  path: '/chords',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,30 +37,34 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/chords': typeof ChordsRoute
   '/notes': typeof NotesRoute
   '/tuner': typeof TunerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/chords': typeof ChordsRoute
   '/notes': typeof NotesRoute
   '/tuner': typeof TunerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/chords': typeof ChordsRoute
   '/notes': typeof NotesRoute
   '/tuner': typeof TunerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/notes' | '/tuner'
+  fullPaths: '/' | '/chords' | '/notes' | '/tuner'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/notes' | '/tuner'
-  id: '__root__' | '/' | '/notes' | '/tuner'
+  to: '/' | '/chords' | '/notes' | '/tuner'
+  id: '__root__' | '/' | '/chords' | '/notes' | '/tuner'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ChordsRoute: typeof ChordsRoute
   NotesRoute: typeof NotesRoute
   TunerRoute: typeof TunerRoute
 }
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chords': {
+      id: '/chords'
+      path: '/chords'
+      fullPath: '/chords'
+      preLoaderRoute: typeof ChordsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ChordsRoute: ChordsRoute,
   NotesRoute: NotesRoute,
   TunerRoute: TunerRoute,
 }
