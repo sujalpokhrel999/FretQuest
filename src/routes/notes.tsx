@@ -38,6 +38,7 @@ function NotesPage() {
   const [showHint, setShowHint] = useState(true);
   const [flash, setFlash] = useState<"success" | null>(null);
   const cooldownRef = useRef(0);
+  const voice = useSpeak(true);
 
   useEffect(() => {
     if (typeof localStorage === "undefined") return;
@@ -50,6 +51,13 @@ function NotesPage() {
       localStorage.setItem("fretwave.notes.high", String(highScore));
     }
   }, [highScore]);
+
+  // Announce every new target
+  useEffect(() => {
+    const name = midiToNoteName(target.midi);
+    voice.speak(`Play ${speakableNote(name)} on the ${stringOrdinalLabel(target.stringIdx)} string`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [target, voice.enabled]);
 
   const pitch = usePitch({
     minClarity: 0.93,
@@ -100,6 +108,18 @@ function NotesPage() {
           >
             {showHint ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
             {showHint ? "Hide fret hint" : "Show fret hint"}
+          </button>
+          <button
+            onClick={() => {
+              if (voice.enabled) voice.stop();
+              voice.setEnabled((v) => !v);
+            }}
+            title={voice.supported ? "Toggle voice prompts" : "Voice not supported in this browser"}
+            disabled={!voice.supported}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-input bg-card px-3 py-2 text-sm hover:bg-accent disabled:opacity-40"
+          >
+            {voice.enabled ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+            {voice.enabled ? "Voice on" : "Voice off"}
           </button>
           <button
             onClick={pitch.listening ? pitch.stop : pitch.start}
