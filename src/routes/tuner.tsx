@@ -25,7 +25,7 @@ export const Route = createFileRoute("/tuner")({
 });
 
 function TunerPage() {
-  const pitch = usePitch({ minClarity: 0.92, minVolume: 0.01 });
+  const pitch = usePitch({ minClarity: 0.8, minVolume: 0.006 });
   const [target, setTarget] = useState<number | null>(null); // midi
 
   // Nearest tuning string if no manual target
@@ -46,12 +46,13 @@ function TunerPage() {
 
   // cents deviation vs active target
   const cents = useMemo(() => {
-    if (!activeTarget || !pitch.frequency || pitch.clarity < 0.9) return 0;
+    if (!activeTarget || !pitch.frequency || pitch.clarity < 0.75) return 0;
     const targetFreq = noteToFrequency(activeTarget);
     return Math.max(-50, Math.min(50, 1200 * Math.log2(pitch.frequency / targetFreq)));
   }, [pitch.frequency, pitch.clarity, activeTarget]);
 
-  const inTune = Math.abs(cents) < 5 && pitch.clarity > 0.9;
+  // GuitarTuna-style: ±10¢ counts as in tune (green zone)
+  const inTune = Math.abs(cents) < 10 && pitch.clarity > 0.75;
 
   return (
     <div className="px-6 md:px-10 py-8 max-w-5xl mx-auto">
@@ -83,7 +84,7 @@ function TunerPage() {
       )}
 
       <section className="rounded-3xl border border-border bg-card p-6 md:p-10">
-        <TunerNeedle cents={cents} inTune={inTune} active={pitch.listening && pitch.clarity > 0.9} />
+        <TunerNeedle cents={cents} inTune={inTune} active={pitch.listening && pitch.clarity > 0.75} />
 
         <div className="mt-8 grid grid-cols-3 gap-4 text-center">
           <Stat label="Note" value={pitch.note ? `${pitch.note.note}${pitch.note.octave}` : "—"} accent />
