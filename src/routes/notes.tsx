@@ -60,13 +60,14 @@ function NotesPage() {
   }, [target, voice.enabled]);
 
   const pitch = usePitch({
-    minClarity: 0.93,
-    minVolume: 0.02,
+    minClarity: 0.82,
+    minVolume: 0.01,
     onNote: (n) => {
       const now = performance.now();
       if (now < cooldownRef.current) return;
       const targetName = midiToNoteName(target.midi);
-      if (n.note === targetName && Math.abs(n.cents) < 35) {
+      // Wider tolerance (±45¢) so a slightly-out-of-tune guitar still scores
+      if (n.note === targetName && Math.abs(n.cents) < 45) {
         cooldownRef.current = now + 700;
         setScore((s) => {
           const ns = s + 10;

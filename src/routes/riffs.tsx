@@ -63,14 +63,14 @@ function RiffsPage() {
   const current = sequence[cursor];
 
   const pitch = usePitch({
-    minClarity: 0.93,
-    minVolume: 0.02,
+    minClarity: 0.82,
+    minVolume: 0.01,
     onNote: (n) => {
       if (!current) return;
       const now = performance.now();
       if (now < cooldownRef.current) return;
       const targetName = midiToNoteName(current.midi);
-      if (n.note === targetName && Math.abs(n.cents) < 40) {
+      if (n.note === targetName && Math.abs(n.cents) < 50) {
         cooldownRef.current = now + 350;
         setScore((s) => s + 5);
         setCursor((c) => c + 1);

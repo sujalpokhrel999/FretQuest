@@ -59,8 +59,8 @@ function ChordsPage() {
   }, [requiredNotes]);
 
   const pitch = usePitch({
-    minClarity: 0.9,
-    minVolume: 0.02,
+    minClarity: 0.8,
+    minVolume: 0.01,
     onNote: (n) => {
       if (!requiredNotes.has(n.note)) return;
       lastResetRef.current = performance.now();
