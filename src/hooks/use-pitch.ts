@@ -18,7 +18,7 @@ export interface UsePitchOptions {
 }
 
 export function usePitch(opts: UsePitchOptions = {}) {
-  const { minClarity = 0.9, minVolume = 0.015, onNote } = opts;
+  const { minClarity = 0.82, minVolume = 0.008, onNote } = opts;
 
   const [state, setState] = useState<PitchState>({
     listening: false,
