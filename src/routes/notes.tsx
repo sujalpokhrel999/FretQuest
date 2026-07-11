@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Mic, MicOff, RotateCcw, Eye, EyeOff } from "lucide-react";
+import { Mic, MicOff, RotateCcw, Eye, EyeOff, Volume2, VolumeX } from "lucide-react";
 import { usePitch } from "@/hooks/use-pitch";
 import { Fretboard } from "@/components/Fretboard";
 import {
@@ -8,17 +8,24 @@ import {
   midiToNoteName,
   randomNoteTarget,
 } from "@/lib/music";
+import { useSpeak, speakableNote, stringOrdinalLabel } from "@/hooks/use-speak";
 
 export const Route = createFileRoute("/notes")({
   head: () => ({
     meta: [
-      { title: "Notes & Scales Trainer — Fretwave" },
+      { title: "Guitar Notes Trainer — Learn the Fretboard | FretQuest" },
       {
         name: "description",
         content:
-          "Sharpen your fretboard knowledge. Play prompted notes on real strings, build streaks, and beat your high score.",
+          "Learn guitar notes on every string with a voice-guided fretboard trainer. Free real-time pitch detection, streaks, and scoring to master the fretboard fast.",
       },
+      { name: "keywords", content: "guitar notes, learn guitar fretboard, fretboard trainer, guitar note practice, ear training guitar, learn guitar online free" },
+      { property: "og:title", content: "Guitar Notes Trainer — Learn the Fretboard | FretQuest" },
+      { property: "og:description", content: "Voice-guided guitar note trainer with real-time pitch detection. Master the fretboard string by string." },
+      { property: "og:url", content: "https://fretquest.lovable.app/notes" },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: "https://fretquest.lovable.app/notes" }],
   }),
   component: NotesPage,
 });
@@ -31,6 +38,7 @@ function NotesPage() {
   const [showHint, setShowHint] = useState(true);
   const [flash, setFlash] = useState<"success" | null>(null);
   const cooldownRef = useRef(0);
+  const voice = useSpeak(true);
 
   useEffect(() => {
     if (typeof localStorage === "undefined") return;
@@ -43,6 +51,13 @@ function NotesPage() {
       localStorage.setItem("fretwave.notes.high", String(highScore));
     }
   }, [highScore]);
+
+  // Announce every new target
+  useEffect(() => {
+    const name = midiToNoteName(target.midi);
+    voice.speak(`Play ${speakableNote(name)} on the ${stringOrdinalLabel(target.stringIdx)} string`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [target, voice.enabled]);
 
   const pitch = usePitch({
     minClarity: 0.93,
@@ -93,6 +108,18 @@ function NotesPage() {
           >
             {showHint ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
             {showHint ? "Hide fret hint" : "Show fret hint"}
+          </button>
+          <button
+            onClick={() => {
+              if (voice.enabled) voice.stop();
+              voice.setEnabled((v) => !v);
+            }}
+            title={voice.supported ? "Toggle voice prompts" : "Voice not supported in this browser"}
+            disabled={!voice.supported}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-input bg-card px-3 py-2 text-sm hover:bg-accent disabled:opacity-40"
+          >
+            {voice.enabled ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+            {voice.enabled ? "Voice on" : "Voice off"}
           </button>
           <button
             onClick={pitch.listening ? pitch.stop : pitch.start}
