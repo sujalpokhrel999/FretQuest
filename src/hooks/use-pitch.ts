@@ -68,15 +68,24 @@ export function usePitch(opts: UsePitchOptions = {}) {
       ctxRef.current = ctx;
       const source = ctx.createMediaStreamSource(stream);
       const analyser = ctx.createAnalyser();
-      analyser.fftSize = 2048;
+      // Larger FFT gives more samples per frame -> more accurate on low strings (E2 ~82Hz)
+      analyser.fftSize = 4096;
       source.connect(analyser);
       analyserRef.current = analyser;
       const detector = PitchDetector.forFloat32Array(analyser.fftSize);
+      // Trade a bit of accuracy for far greater tolerance to noisy / soft input
+      // (default 0.7). GuitarTuna-style: accept lower-quality frames and smooth.
+      (detector as any).clarityThreshold = 0.5;
       detectorRef.current = detector;
       const buffer = new Float32Array(new ArrayBuffer(analyser.fftSize * 4));
       bufferRef.current = buffer;
 
       setState((s) => ({ ...s, listening: true, error: null }));
+
+      // Rolling window of recent frequencies for median smoothing (kills jitter/octave jumps)
+      const freqHistory: number[] = [];
+      const HISTORY_SIZE = 6;
+      let lastSmoothed = 0;
 
       const loop = () => {
         const a = analyserRef.current;
@@ -89,15 +98,39 @@ export function usePitch(opts: UsePitchOptions = {}) {
         let sumSq = 0;
         for (let i = 0; i < b.length; i++) sumSq += b[i] * b[i];
         const rms = Math.sqrt(sumSq / b.length);
-        const [freq, clarity] = d.findPitch(b as unknown as Float32Array<ArrayBuffer>, c.sampleRate);
+        const [rawFreq, clarity] = d.findPitch(b as unknown as Float32Array<ArrayBuffer>, c.sampleRate);
+
+        // Accept a frame if EITHER clarity is decent OR the signal is loud and roughly in guitar range.
+        const inRange = rawFreq > 60 && rawFreq < 1400;
+        const acceptable =
+          inRange && (clarity > minClarity || (clarity > 0.6 && rms > minVolume * 3));
+
+        let smoothed = lastSmoothed;
+        if (acceptable && rms > minVolume) {
+          freqHistory.push(rawFreq);
+          if (freqHistory.length > HISTORY_SIZE) freqHistory.shift();
+          // median = robust vs octave errors / brief spikes
+          const sorted = [...freqHistory].sort((x, y) => x - y);
+          const median = sorted[Math.floor(sorted.length / 2)];
+          // Exponential smoothing on top for a silky needle
+          smoothed = lastSmoothed
+            ? lastSmoothed * 0.6 + median * 0.4
+            : median;
+          lastSmoothed = smoothed;
+        } else if (rms < minVolume * 0.5) {
+          // string decayed / silence -> reset smoothing so next note isn't blended
+          freqHistory.length = 0;
+          lastSmoothed = 0;
+        }
+
         let note: DetectedNote | null = null;
-        if (clarity > minClarity && rms > minVolume && freq > 60 && freq < 1400) {
-          note = frequencyToNote(freq);
+        if (smoothed && acceptable) {
+          note = frequencyToNote(smoothed);
           if (note && onNoteRef.current) onNoteRef.current(note, rms);
         }
         setState((s) => ({
           ...s,
-          frequency: freq,
+          frequency: smoothed || rawFreq,
           clarity,
           volume: rms,
           note: note ?? s.note,
