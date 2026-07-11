@@ -8,13 +8,19 @@ import { CHORDS, chordNotes, type ChordShape } from "@/lib/music";
 export const Route = createFileRoute("/chords")({
   head: () => ({
     meta: [
-      { title: "Chord Trainer — Fretwave" },
+      { title: "Guitar Chord Trainer — Learn Open Chords | FretQuest" },
       {
         name: "description",
         content:
-          "Practice open chords with real-time detection. Strum or arpeggiate — Fretwave listens for every note in the chord.",
+          "Practice guitar chords with real-time detection. Learn open chords like C, G, D, Em, and Am — FretQuest listens for every note in the shape.",
       },
+      { name: "keywords", content: "guitar chords, learn guitar chords, open chords, chord trainer, C major chord, G chord, guitar chord practice" },
+      { property: "og:title", content: "Guitar Chord Trainer | FretQuest" },
+      { property: "og:description", content: "Practice open chords with real-time note detection. Perfect your shapes visually and by ear." },
+      { property: "og:url", content: "https://fretquest.lovable.app/chords" },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: "https://fretquest.lovable.app/chords" }],
   }),
   component: ChordsPage,
 });

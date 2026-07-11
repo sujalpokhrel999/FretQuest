@@ -7,13 +7,19 @@ import { STANDARD_TUNING, noteToFrequency } from "@/lib/music";
 export const Route = createFileRoute("/tuner")({
   head: () => ({
     meta: [
-      { title: "Guitar Tuner — Fretwave" },
+      { title: "Free Online Guitar Tuner — Standard Tuning | FretQuest" },
       {
         name: "description",
         content:
-          "Free real-time guitar tuner with visual needle. Tune every string precisely using your microphone.",
+          "Free online guitar tuner with a visual needle. Tune your acoustic or electric guitar in standard EADGBE tuning using your microphone.",
       },
+      { name: "keywords", content: "guitar tuner, online guitar tuner, free guitar tuner, standard tuning, EADGBE, tune guitar by ear, mic guitar tuner" },
+      { property: "og:title", content: "Free Online Guitar Tuner | FretQuest" },
+      { property: "og:description", content: "Precise real-time guitar tuner using your device microphone. Standard tuning, visual needle, no download." },
+      { property: "og:url", content: "https://fretquest.lovable.app/tuner" },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: "https://fretquest.lovable.app/tuner" }],
   }),
   component: TunerPage,
 });

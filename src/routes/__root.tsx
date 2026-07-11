@@ -76,24 +76,35 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "FretQuest - Interactive Guitar Tuner, Scale & Chord Trainer" },
+      { title: "FretQuest — Learn Guitar Online with Real-Time Pitch Detection" },
       {
         name: "description",
         content:
-          "Learn guitar with real-time microphone pitch detection. Practice notes, chords, riffs, and stay in tune with an integrated tuner and metronome.",
+          "Learn guitar online for free. FretQuest listens through your mic to teach notes, chords, scales, and riffs — with a built-in tuner, metronome, and voice-guided fretboard trainer.",
       },
-      { property: "og:title", content: "FretQuest - Interactive Guitar Tuner, Scale & Chord Trainer" },
+      {
+        name: "keywords",
+        content:
+          "learn guitar online, guitar notes, guitar chords, guitar tuner, fretboard trainer, guitar scales, pentatonic scale, guitar practice app, ear training, guitar riffs, free guitar lessons",
+      },
+      { name: "author", content: "FretQuest" },
+      { name: "robots", content: "index, follow" },
+      { property: "og:site_name", content: "FretQuest" },
+      { property: "og:title", content: "FretQuest — Learn Guitar Online with Real-Time Pitch Detection" },
       {
         property: "og:description",
         content:
-          "Interactive dark-mode guitar coach with pitch detection, chord trainer, riff generator, tuner, and metronome.",
+          "Free interactive guitar coach: tuner, chord trainer, scale drills, and voice-guided fretboard practice powered by real-time pitch detection.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://fretquest.lovable.app" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "FretQuest - Interactive Guitar Tuner, Scale & Chord Trainer" },
-      { name: "description", content: "Master the guitar fret board with FretQuest. Features real-time pitch detection, customized scales drills, chord diagrams, and random riff challenges." },
-      { property: "og:description", content: "Master the guitar fret board with FretQuest. Features real-time pitch detection, customized scales drills, chord diagrams, and random riff challenges." },
-      { name: "twitter:description", content: "Master the guitar fret board with FretQuest. Features real-time pitch detection, customized scales drills, chord diagrams, and random riff challenges." },
+      { name: "twitter:title", content: "FretQuest — Learn Guitar Online" },
+      {
+        name: "twitter:description",
+        content:
+          "Free interactive guitar trainer with real-time pitch detection, tuner, chord practice, and voice-guided note drills.",
+      },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/tFtfCyJVhohuv8DPV6FWrVcbzV03/social-images/social-1783148847826-Gemini_Generated_Image_o3169zo3169zo316.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/tFtfCyJVhohuv8DPV6FWrVcbzV03/social-images/social-1783148847826-Gemini_Generated_Image_o3169zo3169zo316.webp" },
     ],
@@ -105,6 +116,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "FretQuest",
+          url: "https://fretquest.lovable.app",
+          applicationCategory: "EducationalApplication",
+          operatingSystem: "Web",
+          description:
+            "Interactive guitar learning app with real-time pitch detection, tuner, chord trainer, scale drills, and voice-guided fretboard practice.",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          audience: { "@type": "Audience", audienceType: "Guitar students, beginner and intermediate guitar players" },
+          featureList: [
+            "Real-time guitar tuner",
+            "Voice-guided fretboard note trainer",
+            "Chord recognition and practice",
+            "Pentatonic scale and riff generator",
+            "Metronome for rhythm training",
+          ],
+        }),
       },
     ],
   }),

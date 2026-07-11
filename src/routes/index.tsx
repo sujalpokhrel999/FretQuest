@@ -3,6 +3,44 @@ import { Fretboard } from "@/components/Fretboard";
 import { ArrowRight, Guitar, Music2, Music3, Waves, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    links: [{ rel: "canonical", href: "https://fretquest.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            {
+              "@type": "Question",
+              name: "How do I learn guitar notes on the fretboard?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Use FretQuest's voice-guided Notes trainer: it announces a note and string (e.g. 'Play C on the 4th string') and listens through your microphone to verify you played it correctly.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Is FretQuest free to use for learning guitar online?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes. FretQuest is a free browser-based guitar trainer with a tuner, chord practice, scales, and riff generator — no signup required.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Do I need special hardware to practice guitar with FretQuest?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "No. Any acoustic or electric guitar plus your device's microphone works. FretQuest uses real-time pitch detection in the browser.",
+              },
+            },
+          ],
+        }),
+      },
+    ],
+  }),
   component: Home,
 });
 
