@@ -15,13 +15,19 @@ import {
 export const Route = createFileRoute("/riffs")({
   head: () => ({
     meta: [
-      { title: "Riffs & Leads Generator — Fretwave" },
+      { title: "Guitar Riff & Pentatonic Scale Generator | FretQuest" },
       {
         name: "description",
         content:
-          "Practice lead guitar with generated pentatonic riffs or pure fretboard chaos. Optional rhythm mode with metronome.",
+          "Practice lead guitar with generated pentatonic riffs and scale runs. Optional metronome for rhythm training and improvisation drills.",
       },
+      { name: "keywords", content: "pentatonic scale, guitar riffs, lead guitar practice, guitar improvisation, guitar scale generator, minor pentatonic" },
+      { property: "og:title", content: "Guitar Riff & Pentatonic Generator | FretQuest" },
+      { property: "og:description", content: "Endless pentatonic riffs and lead lines to practice against a metronome." },
+      { property: "og:url", content: "https://fretquest.lovable.app/riffs" },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: "https://fretquest.lovable.app/riffs" }],
   }),
   component: RiffsPage,
 });
