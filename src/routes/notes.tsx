@@ -65,6 +65,9 @@ function NotesPage() {
     onNote: (n) => {
       const now = performance.now();
       if (now < cooldownRef.current) return;
+      // Ignore audio while TTS is playing (and briefly after) so the
+      // spoken prompt doesn't get scored as a played note.
+      if (voice.isMuted()) return;
       const targetName = midiToNoteName(target.midi);
       // Wider tolerance (±45¢) so a slightly-out-of-tune guitar still scores
       if (n.note === targetName && Math.abs(n.cents) < 45) {
