@@ -7,6 +7,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 export function useSpeak(defaultEnabled = false) {
   const [enabled, setEnabled] = useState(defaultEnabled);
   const [supported, setSupported] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const speakingRef = useRef(false);
+  // Timestamp (performance.now) until which callers should treat mic input
+  // as contaminated by TTS playback. Kept slightly past utterance end to
+  // cover speaker->mic latency and trailing reverb.
+  const mutedUntilRef = useRef(0);
   const voiceRef = useRef<SpeechSynthesisVoice | null>(null);
 
   useEffect(() => {
@@ -14,7 +20,6 @@ export function useSpeak(defaultEnabled = false) {
     setSupported(true);
     const pickVoice = () => {
       const voices = window.speechSynthesis.getVoices();
-      // Prefer an English voice; fall back to first available.
       voiceRef.current =
         voices.find((v) => /en(-|_)?US/i.test(v.lang) && /female|samantha|zira/i.test(v.name)) ||
         voices.find((v) => v.lang?.toLowerCase().startsWith("en")) ||
@@ -28,6 +33,11 @@ export function useSpeak(defaultEnabled = false) {
     };
   }, []);
 
+  const setSpeakingBoth = (v: boolean) => {
+    speakingRef.current = v;
+    setSpeaking(v);
+  };
+
   const speak = useCallback(
     (text: string) => {
       if (!enabled || !supported || typeof window === "undefined") return;
@@ -38,9 +48,19 @@ export function useSpeak(defaultEnabled = false) {
         u.rate = 0.95;
         u.pitch = 1;
         u.volume = 1;
+        setSpeakingBoth(true);
+        // Preemptively mute mic input; extended when utterance actually ends.
+        mutedUntilRef.current = performance.now() + 10_000;
+        const done = () => {
+          setSpeakingBoth(false);
+          // Keep muted for a short tail to cover speaker echo / room reverb.
+          mutedUntilRef.current = performance.now() + 350;
+        };
+        u.onend = done;
+        u.onerror = done;
         window.speechSynthesis.speak(u);
       } catch {
-        /* noop */
+        setSpeakingBoth(false);
       }
     },
     [enabled, supported],
@@ -50,9 +70,16 @@ export function useSpeak(defaultEnabled = false) {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
+    setSpeakingBoth(false);
+    mutedUntilRef.current = performance.now() + 200;
   }, []);
 
-  return { enabled, setEnabled, supported, speak, stop };
+  const isMuted = useCallback(
+    () => speakingRef.current || performance.now() < mutedUntilRef.current,
+    [],
+  );
+
+  return { enabled, setEnabled, supported, speaking, speak, stop, isMuted };
 }
 
 /** Convert a note name like "C#" into spoken form like "C sharp". */
