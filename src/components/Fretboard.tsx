@@ -158,6 +158,23 @@ export function Fretboard({ highlight, showLabels = true, litNote, positions, cl
           }),
         )}
 
+      {/* fixed positions overlay (e.g. pentatonic box) */}
+      {positions?.map((p, i) => {
+        const cx = p.fret === 0 ? PAD_L - 22 : PAD_L + p.fret * FRET_WIDTH - FRET_WIDTH / 2;
+        const cy = PAD_TB + (5 - p.stringIdx) * STRING_SPACING;
+        const color = p.isRoot ? "var(--color-active)" : "var(--color-success)";
+        return (
+          <g key={`p-${i}`}>
+            <circle cx={cx} cy={cy} r={p.isRoot ? 10 : 8} fill={color} opacity={p.isRoot ? 0.95 : 0.55} stroke="var(--color-background)" strokeWidth={1} />
+            {p.isRoot && showLabels && (
+              <text x={cx} y={cy + 3.5} textAnchor="middle" fontSize={9} fontWeight={700} fill="var(--color-background)" fontFamily="var(--font-mono)">
+                R
+              </text>
+            )}
+          </g>
+        );
+      })}
+
       {/* highlight target */}
       {highlight && (() => {
         const s = highlight.stringIdx;
