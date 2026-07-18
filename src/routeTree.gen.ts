@@ -13,6 +13,7 @@ import { Route as TunerRouteImport } from './routes/tuner'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RiffsRouteImport } from './routes/riffs'
 import { Route as NotesRouteImport } from './routes/notes'
+import { Route as JamRouteImport } from './routes/jam'
 import { Route as ChordsRouteImport } from './routes/chords'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -36,6 +37,11 @@ const NotesRoute = NotesRouteImport.update({
   path: '/notes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JamRoute = JamRouteImport.update({
+  id: '/jam',
+  path: '/jam',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChordsRoute = ChordsRouteImport.update({
   id: '/chords',
   path: '/chords',
@@ -50,6 +56,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/chords': typeof ChordsRoute
+  '/jam': typeof JamRoute
   '/notes': typeof NotesRoute
   '/riffs': typeof RiffsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/chords': typeof ChordsRoute
+  '/jam': typeof JamRoute
   '/notes': typeof NotesRoute
   '/riffs': typeof RiffsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/chords': typeof ChordsRoute
+  '/jam': typeof JamRoute
   '/notes': typeof NotesRoute
   '/riffs': typeof RiffsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -74,13 +83,21 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/chords' | '/notes' | '/riffs' | '/sitemap.xml' | '/tuner'
+  fullPaths:
+    | '/'
+    | '/chords'
+    | '/jam'
+    | '/notes'
+    | '/riffs'
+    | '/sitemap.xml'
+    | '/tuner'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/chords' | '/notes' | '/riffs' | '/sitemap.xml' | '/tuner'
+  to: '/' | '/chords' | '/jam' | '/notes' | '/riffs' | '/sitemap.xml' | '/tuner'
   id:
     | '__root__'
     | '/'
     | '/chords'
+    | '/jam'
     | '/notes'
     | '/riffs'
     | '/sitemap.xml'
@@ -90,6 +107,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChordsRoute: typeof ChordsRoute
+  JamRoute: typeof JamRoute
   NotesRoute: typeof NotesRoute
   RiffsRoute: typeof RiffsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -126,6 +144,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jam': {
+      id: '/jam'
+      path: '/jam'
+      fullPath: '/jam'
+      preLoaderRoute: typeof JamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/chords': {
       id: '/chords'
       path: '/chords'
@@ -146,6 +171,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChordsRoute: ChordsRoute,
+  JamRoute: JamRoute,
   NotesRoute: NotesRoute,
   RiffsRoute: RiffsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
@@ -154,13 +180,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

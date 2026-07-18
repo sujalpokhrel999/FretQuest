@@ -10,6 +10,8 @@ interface Props {
   highlight?: { stringIdx: number; fret: number } | null;
   showLabels?: boolean;
   litNote?: NoteName | null; // e.g. currently detected note - shows all matches
+  /** Overlay a fixed set of positions (e.g. pentatonic box). */
+  positions?: { stringIdx: number; fret: number; isRoot?: boolean }[];
   className?: string;
 }
 
@@ -20,7 +22,7 @@ const PAD_R = 24;
 const PAD_TB = 22;
 const DOT_FRETS = [3, 5, 7, 9];
 
-export function Fretboard({ highlight, showLabels = true, litNote, className }: Props) {
+export function Fretboard({ highlight, showLabels = true, litNote, positions, className }: Props) {
   const width = PAD_L + PAD_R + (FRET_COUNT + 1) * FRET_WIDTH;
   const height = PAD_TB * 2 + STRING_SPACING * 5;
 
@@ -155,6 +157,23 @@ export function Fretboard({ highlight, showLabels = true, litNote, className }: 
             );
           }),
         )}
+
+      {/* fixed positions overlay (e.g. pentatonic box) */}
+      {positions?.map((p, i) => {
+        const cx = p.fret === 0 ? PAD_L - 22 : PAD_L + p.fret * FRET_WIDTH - FRET_WIDTH / 2;
+        const cy = PAD_TB + (5 - p.stringIdx) * STRING_SPACING;
+        const color = p.isRoot ? "var(--color-active)" : "var(--color-success)";
+        return (
+          <g key={`p-${i}`}>
+            <circle cx={cx} cy={cy} r={p.isRoot ? 10 : 8} fill={color} opacity={p.isRoot ? 0.95 : 0.55} stroke="var(--color-background)" strokeWidth={1} />
+            {p.isRoot && showLabels && (
+              <text x={cx} y={cy + 3.5} textAnchor="middle" fontSize={9} fontWeight={700} fill="var(--color-background)" fontFamily="var(--font-mono)">
+                R
+              </text>
+            )}
+          </g>
+        );
+      })}
 
       {/* highlight target */}
       {highlight && (() => {

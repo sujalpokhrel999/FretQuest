@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Guitar, Music2, Music3, Waves, Zap } from "lucide-react";
+import { Guitar, Music2, Music3, Sparkles, Waves, Zap } from "lucide-react";
 
 const items = [
   { to: "/", label: "Home", icon: Guitar },
@@ -7,6 +7,7 @@ const items = [
   { to: "/notes", label: "Notes & Scales", icon: Music2 },
   { to: "/chords", label: "Chords", icon: Music3 },
   { to: "/riffs", label: "Riffs & Leads", icon: Zap },
+  { to: "/jam", label: "AI Jam Partner", icon: Sparkles },
 ] as const;
 
 export function AppSidebar() {
