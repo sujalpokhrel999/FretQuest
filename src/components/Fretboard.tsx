@@ -22,7 +22,7 @@ const PAD_R = 24;
 const PAD_TB = 22;
 const DOT_FRETS = [3, 5, 7, 9];
 
-export function Fretboard({ highlight, showLabels = true, litNote, className }: Props) {
+export function Fretboard({ highlight, showLabels = true, litNote, positions, className }: Props) {
   const width = PAD_L + PAD_R + (FRET_COUNT + 1) * FRET_WIDTH;
   const height = PAD_TB * 2 + STRING_SPACING * 5;
 
