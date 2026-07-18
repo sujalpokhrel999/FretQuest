@@ -10,6 +10,8 @@ interface Props {
   highlight?: { stringIdx: number; fret: number } | null;
   showLabels?: boolean;
   litNote?: NoteName | null; // e.g. currently detected note - shows all matches
+  /** Overlay a fixed set of positions (e.g. pentatonic box). */
+  positions?: { stringIdx: number; fret: number; isRoot?: boolean }[];
   className?: string;
 }
 
