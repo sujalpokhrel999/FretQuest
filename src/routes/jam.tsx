@@ -48,6 +48,7 @@ function JamPage() {
   const [root, setRoot] = useState<NoteName>("A");
   const [quality, setQuality] = useState<Quality>("minor");
   const [bpm, setBpm] = useState(90);
+  const [style, setStyle] = useState<JamStyle>("strum");
   const [sessionActive, setSessionActive] = useState(false);
   const [rating, setRating] = useState<JamRating | null>(null);
   const [rating_loading, setRatingLoading] = useState(false);
@@ -59,7 +60,7 @@ function JamPage() {
   const positions = useMemo(() => pentatonicBoxPositions(root, quality), [root, quality]);
   const boxFret = pentatonicBoxStartFret(root, quality);
 
-  const backing = useBackingTrack({ progression, bpm, beatsPerChord: 4 });
+  const backing = useBackingTrack({ progression, bpm, beatsPerChord: 4, style });
 
   // Session stats
   const startedAtRef = useRef(0);
