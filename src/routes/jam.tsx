@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Mic, MicOff, Play, Square, Sparkles, Loader2, Music4 } from "lucide-react";
 import { Fretboard } from "@/components/Fretboard";
 import { usePitch } from "@/hooks/use-pitch";
-import { useBackingTrack } from "@/hooks/use-backing-track";
+import { useBackingTrack, JAM_STYLES, type JamStyle } from "@/hooks/use-backing-track";
 import {
   ALL_KEYS,
   chordProgression,
