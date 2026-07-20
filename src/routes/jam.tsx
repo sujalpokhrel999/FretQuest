@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Mic, MicOff, Play, Square, Sparkles, Loader2, Music4 } from "lucide-react";
 import { Fretboard } from "@/components/Fretboard";
 import { usePitch } from "@/hooks/use-pitch";
-import { useBackingTrack } from "@/hooks/use-backing-track";
+import { useBackingTrack, JAM_STYLES, type JamStyle } from "@/hooks/use-backing-track";
 import {
   ALL_KEYS,
   chordProgression,
@@ -48,6 +48,7 @@ function JamPage() {
   const [root, setRoot] = useState<NoteName>("A");
   const [quality, setQuality] = useState<Quality>("minor");
   const [bpm, setBpm] = useState(90);
+  const [style, setStyle] = useState<JamStyle>("strum");
   const [sessionActive, setSessionActive] = useState(false);
   const [rating, setRating] = useState<JamRating | null>(null);
   const [rating_loading, setRatingLoading] = useState(false);
@@ -59,7 +60,7 @@ function JamPage() {
   const positions = useMemo(() => pentatonicBoxPositions(root, quality), [root, quality]);
   const boxFret = pentatonicBoxStartFret(root, quality);
 
-  const backing = useBackingTrack({ progression, bpm, beatsPerChord: 4 });
+  const backing = useBackingTrack({ progression, bpm, beatsPerChord: 4, style });
 
   // Session stats
   const startedAtRef = useRef(0);
@@ -177,34 +178,73 @@ function JamPage() {
       </header>
 
       {/* Controls */}
-      <section className="rounded-xl border border-border bg-card/60 p-4 grid gap-4 md:grid-cols-4">
-        <label className="text-xs uppercase tracking-wider text-muted-foreground">
-          Key
-          <select
-            className="mt-1 w-full rounded-md border border-input bg-background px-2 py-2 text-sm text-foreground"
-            value={`${root}|${quality}`}
-            onChange={(e) => {
-              const [r, q] = e.target.value.split("|") as [NoteName, Quality];
-              setRoot(r); setQuality(q);
-            }}
-            disabled={sessionActive}
-          >
-            {ALL_KEYS.map((k) => (
-              <option key={k.label} value={`${k.root}|${k.quality}`}>{k.label}</option>
-            ))}
-          </select>
-        </label>
-        <label className="text-xs uppercase tracking-wider text-muted-foreground">
-          Tempo — {bpm} BPM
-          <input
-            type="range" min={60} max={140} step={1}
-            value={bpm}
-            onChange={(e) => setBpm(Number(e.target.value))}
-            disabled={sessionActive}
-            className="mt-3 w-full accent-primary"
-          />
-        </label>
-        <div className="text-xs uppercase tracking-wider text-muted-foreground md:col-span-2">
+      <section className="rounded-xl border border-border bg-card/60 p-4 space-y-4">
+        <div className="grid gap-4 md:grid-cols-3">
+          <label className="text-xs uppercase tracking-wider text-muted-foreground">
+            Key
+            <select
+              className="mt-1 w-full rounded-md border border-input bg-background px-2 py-2 text-sm text-foreground"
+              value={`${root}|${quality}`}
+              onChange={(e) => {
+                const [r, q] = e.target.value.split("|") as [NoteName, Quality];
+                setRoot(r); setQuality(q);
+              }}
+              disabled={sessionActive}
+            >
+              {ALL_KEYS.map((k) => (
+                <option key={k.label} value={`${k.root}|${k.quality}`}>{k.label}</option>
+              ))}
+            </select>
+          </label>
+          <label className="text-xs uppercase tracking-wider text-muted-foreground">
+            Tempo — {bpm} BPM
+            <input
+              type="range" min={60} max={140} step={1}
+              value={bpm}
+              onChange={(e) => setBpm(Number(e.target.value))}
+              disabled={sessionActive}
+              className="mt-3 w-full accent-primary"
+            />
+          </label>
+          <label className="text-xs uppercase tracking-wider text-muted-foreground">
+            Style
+            <select
+              className="mt-1 w-full rounded-md border border-input bg-background px-2 py-2 text-sm text-foreground"
+              value={style}
+              onChange={(e) => setStyle(e.target.value as JamStyle)}
+              disabled={sessionActive}
+            >
+              {JAM_STYLES.map((s) => (
+                <option key={s.id} value={s.id}>{s.label}</option>
+              ))}
+            </select>
+            <div className="mt-1 text-[11px] normal-case tracking-normal text-muted-foreground/80">
+              {JAM_STYLES.find((s) => s.id === style)?.hint}
+            </div>
+          </label>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {JAM_STYLES.map((s) => (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => !sessionActive && setStyle(s.id)}
+              disabled={sessionActive}
+              className={[
+                "text-xs rounded-full px-3 py-1.5 border transition",
+                style === s.id
+                  ? "bg-primary text-primary-foreground border-primary shadow-glow"
+                  : "border-border text-foreground/80 hover:border-primary/40",
+                sessionActive ? "opacity-60 cursor-not-allowed" : "",
+              ].join(" ")}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="text-xs uppercase tracking-wider text-muted-foreground">
           Chord Progression
           <div className="mt-1 flex flex-wrap gap-2">
             {progression.map((c, i) => (
